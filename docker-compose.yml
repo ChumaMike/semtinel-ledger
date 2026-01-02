@@ -1,0 +1,12 @@
+services:
+  db:
+    image: postgres:15
+    container_name: sentinel_db
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: sentinel_ledger
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
