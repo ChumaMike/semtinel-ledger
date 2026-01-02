@@ -1,12 +1,34 @@
+version: '3.8'
 services:
   db:
     image: postgres:15
-    container_name: sentinel_db
     environment:
-      POSTGRES_USER: user
+      POSTGRES_DB: sentinel_db
+      POSTGRES_USER: admin
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: sentinel_ledger
     ports:
       - "5432:5432"
-    volumes:
-      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  sentinel-ai:
+    build: ./sentinel-monitor
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+
+  core-engine:
+    build: ./core-engine
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/sentinel_db
+    depends_on:
+      - db
+      - sentinel-ai
+
+  dashboard:
+    build: ./sentinel-dashboard
+    ports:
+      - "5173:5173"
+    depends_on:
+      - core-engine
