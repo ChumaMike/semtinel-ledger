@@ -9,6 +9,8 @@ import java.math.BigDecimal;
 import org.springframework.web.client.RestTemplate;
 import java.math.BigDecimal;
 import java.util.Map;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.http.ResponseEntity;
 
 @Service
 public class AccountService {
@@ -51,5 +53,31 @@ public class AccountService {
 
         accountRepository.save(fromAccount);
         accountRepository.save(toAccount);
+    }
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate; // For checking the DB
+
+    public Map<String, String> checkSystemHealth() {
+        Map<String, String> status = new java.util.HashMap<>();
+
+        // 1. Check Database
+        try {
+            jdbcTemplate.execute("SELECT 1");
+            status.put("database", "UP");
+        } catch (Exception e) {
+            status.put("database", "DOWN - " + e.getMessage());
+        }
+
+        // 2. Check Python Sentinel
+        try {
+            String sentinelUrl = "http://localhost:8000/docs"; // FastAPI docs are a safe ping
+            ResponseEntity<String> response = restTemplate.getForEntity(sentinelUrl, String.class);
+            status.put("sentinel", response.getStatusCode().is2xxSuccessful() ? "UP" : "DOWN");
+        } catch (Exception e) {
+            status.put("sentinel", "DOWN - Python service not responding");
+        }
+
+        return status;
     }
 }

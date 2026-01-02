@@ -8,6 +8,7 @@ import com.chumabanking.sentinel.service.AccountService;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/accounts")
@@ -35,5 +36,10 @@ public class AccountController {
                            @RequestParam BigDecimal amount) {
         accountService.transferMoney(fromId, toId, amount);
         return "Transfer successful! Sent R" + amount + " to Account ID: " + toId;
+    }
+
+    @GetMapping("/health")
+    public Map<String, String> getHealth() {
+        return accountService.checkSystemHealth();
     }
 }
