@@ -5,6 +5,8 @@ import com.chumabanking.sentinel.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.chumabanking.sentinel.service.AccountService;
+
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -13,6 +15,9 @@ public class AccountController {
 
     @Autowired
     private AccountRepository accountRepository;
+
+    @Autowired
+    private AccountService accountService;
 
     @GetMapping
     public List<Account> getAllAccounts() {
@@ -25,8 +30,10 @@ public class AccountController {
     }
 
     @PostMapping("/transfer")
-    public String transfer(@RequestParam Long fromId, @RequestParam Long toId, @RequestParam java.math.BigDecimal amount) {
-        AccountService.transferMoney(fromId, toId, amount);
-        return "Transfer successful! Sent " + amount + " to Account ID: " + toId;
+    public String transfer(@RequestParam Long fromId,
+                           @RequestParam Long toId,
+                           @RequestParam BigDecimal amount) {
+        accountService.transferMoney(fromId, toId, amount);
+        return "Transfer successful! Sent R" + amount + " to Account ID: " + toId;
     }
 }
