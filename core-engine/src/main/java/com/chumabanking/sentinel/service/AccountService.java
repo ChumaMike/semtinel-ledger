@@ -3,7 +3,6 @@ package com.chumabanking.sentinel.service;
 import com.sentinel.common.model.Account;
 import com.sentinel.common.model.Transaction;
 import com.sentinel.common.dto.AlertDTO;
-import com.chumabanking.sentinel.model.Transaction;
 import com.chumabanking.sentinel.repository.AccountRepository;
 import com.chumabanking.sentinel.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;

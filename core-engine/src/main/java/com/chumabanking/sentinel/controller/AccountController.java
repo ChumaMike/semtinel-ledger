@@ -1,7 +1,7 @@
 package com.chumabanking.sentinel.controller;
 
-import com.chumabanking.sentinel.model.Account;
-import com.chumabanking.sentinel.model.Transaction;
+import com.sentinel.common.model.Account;
+import com.sentinel.common.model.Transaction;
 import com.chumabanking.sentinel.repository.AccountRepository;
 import com.chumabanking.sentinel.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;

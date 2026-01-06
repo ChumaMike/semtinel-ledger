@@ -1,6 +1,6 @@
 package com.chumabanking.sentinel.repository;
 
-import com.chumabanking.sentinel.model.Account;
+import com.sentinel.common.model.Account;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,3 +1,3 @@
 com/sentinel/common/dto/AlertDTO.class
-com/chumabanking/sentinel/model/Transaction.class
-com/chumabanking/sentinel/model/Account.class
+com/sentinel/common/model/Account.class
+com/sentinel/common/model/Transaction.class
