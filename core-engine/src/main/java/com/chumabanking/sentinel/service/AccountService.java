@@ -1,6 +1,8 @@
 package com.chumabanking.sentinel.service;
 
-import com.chumabanking.sentinel.model.Account;
+import com.sentinel.common.model.Account;
+import com.sentinel.common.model.Transaction;
+import com.sentinel.common.dto.AlertDTO;
 import com.chumabanking.sentinel.model.Transaction;
 import com.chumabanking.sentinel.repository.AccountRepository;
 import com.chumabanking.sentinel.repository.TransactionRepository;
@@ -14,6 +16,8 @@ import java.util.HashMap;
 import java.util.Map;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.http.ResponseEntity;
+
+
 
 @Service
 public class AccountService {

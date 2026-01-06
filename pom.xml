@@ -18,6 +18,27 @@
 
     <properties>
         <java.version>17</java.version>
+        <spring.boot.version>3.4.1</spring.boot.version>
+        <postgresql.version>42.7.2</postgresql.version>
+        <lombok.version>1.18.30</lombok.version>
     </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring.boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.postgresql</groupId>
+                <artifactId>postgresql</artifactId>
+                <version>${postgresql.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
 </project>
