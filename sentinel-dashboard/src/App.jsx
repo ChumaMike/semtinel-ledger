@@ -110,7 +110,7 @@ function App() {
                                     {accounts.map(acc => {
                                         // Logic: Determine color and health based on balance
                                         const isLowBalance = acc.balance < 2000;
-                                        const barColor = isLowBalance ? "#dc3545" : FNB_TEAL; // Red if low, Teal if healthy
+                                        const barColor = isLowBalance ? "#ffffff" : FNB_TEAL; // Red if low, Teal if healthy
                                         const statusText = isLowBalance ? "Low Balance" : "Healthy";
 
                                         return (
