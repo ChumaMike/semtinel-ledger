@@ -8,6 +8,8 @@ services:
       POSTGRES_PASSWORD: password
     ports:
       - "5432:5432"
+    networks:
+      - sentinel-network
 
   sentinel-ai:
     build: ./sentinel-monitor
@@ -15,6 +17,8 @@ services:
       - "8000:8000"
     depends_on:
       - db
+    networks:
+      - sentinel-network
 
   core-engine:
     build: ./core-engine
@@ -27,6 +31,8 @@ services:
     depends_on:
       - db
       - sentinel-ai
+    networks:
+      - sentinel-network
 
   dashboard:
     build: ./sentinel-dashboard
@@ -36,3 +42,17 @@ services:
     tty: true
     depends_on:
       - core-engine
+    networks:
+      - sentinel-network
+
+  web-service:
+    build: ./web-service
+    container_name: sentinel-web-service
+    ports:
+      - "8081:8081"
+    networks:
+      - sentinel-network
+
+networks:
+  sentinel-network:
+    driver: bridge
