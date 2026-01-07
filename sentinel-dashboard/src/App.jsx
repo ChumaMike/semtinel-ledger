@@ -19,7 +19,6 @@ function App() {
         return localStorage.getItem('sentinel_token') !== null;
     });
 
-    const [accounts, setAccounts] = useState([]);
     const [activeTab, setActiveTab] = useState('dashboard');
     const [alerts, setAlerts] = useState([]);
     const [history, setHistory] = useState([]);
@@ -27,9 +26,11 @@ function App() {
     const [loading, setLoading] = useState(false);
 
     const [profile, setProfile] = useState(() => {
-        const savedProfile = localStorage.getItem('sentinel_profile');
-        return savedProfile ? JSON.parse(savedProfile) : { name: "Guest", email: "N/A" };
+        const saved = localStorage.getItem('sentinel_profile');
+        return saved ? JSON.parse(saved) : { name: "Guest", email: "N/A" };
     });
+
+    const [accounts, setAccounts] = useState([]);
 
     // 🌟 Utility to get headers with JWT
     const getAuthConfig = () => ({
@@ -64,12 +65,19 @@ function App() {
 
     useEffect(() => {
         if (isAuthenticated) {
+            const savedProfile = localStorage.getItem('sentinel_profile');
+            if (savedProfile) setProfile(JSON.parse(savedProfile));
             fetchData();
             fetchWatchdogAlerts();
-            const interval = setInterval(fetchWatchdogAlerts, 10000);
-            return () => clearInterval(interval);
         }
     }, [isAuthenticated]);
+
+    const handleLogout = () => {
+        localStorage.removeItem('sentinel_token');
+        localStorage.removeItem('sentinel_profile');
+        setIsAuthenticated(false);
+        setAccounts([]); // Clear the state
+    };
 
     const handleTransfer = async (e) => {
         e.preventDefault();

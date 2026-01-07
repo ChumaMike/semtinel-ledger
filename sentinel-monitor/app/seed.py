@@ -3,19 +3,18 @@ import time
 import sys
 
 def seed_data():
-    # 🌟 ENTERPRISE ALIGNMENT: Match these to docker-compose.yml exactly
     db_config = {
         "dbname": "sentinel_db",
-        "user": "user",          # ✅ Fixed: was admin
+        "user": "user",
         "password": "password",
-        "host": "db",            # ✅ Fixed: was 127.0.0.1 (Docker needs service name)
+        "host": "db",
         "port": "5432"
     }
 
     conn = None
-    retries = 10 # 🌟 INCREASED: Give Postgres time to finish initializing
+    retries = 10
 
-    print("🚀 Sentinel Seeder: Initializing vault data...")
+    print("🚀 Sentinel Seeder: Provisioning Multi-User Environment...")
     while retries > 0:
         try:
             conn = psycopg2.connect(**db_config)
@@ -23,23 +22,24 @@ def seed_data():
             break
         except Exception as e:
             retries -= 1
-            print(f"⚠️ Database not ready. Retrying in 5 seconds... ({retries} attempts left)")
+            print(f"⚠️ Database not ready. Retrying in 5s... ({retries} left)")
             time.sleep(5)
 
     if not conn:
-        print("❌ CRITICAL: Could not reach the database container 'db'.")
+        print("❌ CRITICAL: Database unreachable.")
         sys.exit(1)
 
     try:
         cur = conn.cursor()
-        print("🔨 Ensuring Schema Integrity...")
 
-        # 1. Create tables with proper constraints
+        # 1. Create Schema with 'pin' and 'role' for Auth Support
         cur.execute("""
                     CREATE TABLE IF NOT EXISTS users (
                                                          user_id SERIAL PRIMARY KEY,
                                                          full_name VARCHAR(255),
-                        email VARCHAR(255)
+                        email VARCHAR(255),
+                        pin VARCHAR(10),
+                        role VARCHAR(50)
                         );
                     CREATE TABLE IF NOT EXISTS accounts (
                                                             account_id SERIAL PRIMARY KEY,
@@ -56,32 +56,39 @@ def seed_data():
                         timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                         );
                     """)
-        conn.commit()
 
-        print("🧹 Purging old records (Cascade)...")
+        print("🧹 Cleaning environment...")
         cur.execute("TRUNCATE TABLE transactions, accounts, users RESTART IDENTITY CASCADE;")
+
+        # 2. Provision User A (Chuma)
+        print("👤 Provisioning: Chuma Meyiswa (PIN: 1234)...")
+        cur.execute("""
+                    INSERT INTO users (full_name, email, pin, role)
+                    VALUES (%s, %s, %s, %s) RETURNING user_id
+                    """, ("Chuma Meyiswa", "nmeyiswa@gmail.com", "1234", "SENTINEL_PREMIUM"))
+        chuma_id = cur.fetchone()[0]
+        cur.execute("INSERT INTO accounts (user_id, balance, currency) VALUES (%s, 15000.50, 'ZAR')", (chuma_id,))
+
+        # 3. Provision User B (Test Recipient)
+        print("👤 Provisioning: Test Recipient (PIN: 5678)...")
+        cur.execute("""
+                    INSERT INTO users (full_name, email, pin, role)
+                    VALUES (%s, %s, %s, %s) RETURNING user_id
+                    """, ("Test Recipient", "test@sentinel.com", "5678", "SENTINEL_BASIC"))
+        test_id = cur.fetchone()[0]
+        cur.execute("INSERT INTO accounts (user_id, balance, currency) VALUES (%s, 2500.00, 'ZAR')", (test_id,))
+
         conn.commit()
-
-        print("👤 Provisioning User & Accounts...")
-        cur.execute("INSERT INTO users (full_name, email) VALUES (%s, %s) RETURNING user_id",
-                    ("Chuma Meyiswa", "nmeyiswa@gmail.com"))
-        u_id = cur.fetchone()[0]
-
-        # 🌟 Create Account 1 and 2
-        cur.execute("INSERT INTO accounts (user_id, balance, currency) VALUES (%s, 15000.50, 'ZAR')", (u_id,))
-        cur.execute("INSERT INTO accounts (user_id, balance, currency) VALUES (%s, 2500.00, 'ZAR')", (u_id,))
-
-        conn.commit()
-        print("🎉 SUCCESS: Sentinel Ledger populated. Account 1 is ready with R 15,000.50")
+        print("🎉 SUCCESS: Multi-user environment is LIVE.")
+        print("👉 User 1: PIN 1234 | User 2: PIN 5678")
 
     except Exception as error:
-        print(f"❌ Error during seed: {error}")
+        print(f"❌ Error: {error}")
         conn.rollback()
     finally:
         if conn:
             cur.close()
             conn.close()
-            print("🔌 Database connection closed.")
 
 if __name__ == "__main__":
     seed_data()
