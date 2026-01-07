@@ -7,29 +7,37 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "transactions")
-@Data // Lombok handles getters/setters
+@Data
 public class Transaction {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long transactionId;
 
-    private Long fromAccountId;
-    private Long toAccountId;
+    private Long fromAccountId; // Internal Ref
+    private Long toAccountId;   // Internal Ref
+
+    // 🌟 RETAIL BANKING FIELDS
+    private String senderAccountNumber;   // e.g. 100100001
+    private String receiverAccountNumber; // e.g. 200200001
+    private String description;           // e.g. "Monthly Rent"
+
     private BigDecimal amount;
-    private String status; // "SUCCESS" or "BLOCKED"
+    private String status; // "SUCCESS", "BLOCKED", "FAILED"
 
     private LocalDateTime timestamp;
 
-    // Default constructor for JPA
     public Transaction() {}
 
-    // Convenience constructor
-    public Transaction(Long from, Long to, BigDecimal amt, String stat) {
-        this.fromAccountId = from;
-        this.toAccountId = to;
-        this.amount = amt;
-        this.status = stat;
+    // Updated Constructor for Retail Logic
+    public Transaction(Long fromId, Long toId, String fromAccNum, String toAccNum, BigDecimal amount, String status, String description) {
+        this.fromAccountId = fromId;
+        this.toAccountId = toId;
+        this.senderAccountNumber = fromAccNum;
+        this.receiverAccountNumber = toAccNum;
+        this.amount = amount;
+        this.status = status;
+        this.description = description;
         this.timestamp = LocalDateTime.now();
     }
 }
