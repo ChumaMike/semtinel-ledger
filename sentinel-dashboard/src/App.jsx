@@ -78,7 +78,9 @@ function App() {
                 <div className="container-fluid p-5" style={{ maxWidth: '1200px' }}>
                     {activeTab === 'dashboard' ? <Dashboard /> :
                         activeTab === 'payments' ? <Payments /> :
-                            <Admin />}
+                            activeTab === 'goals' ? <Goals /> : // 🌟 NEW
+                                activeTab === 'financial-health' ? <FinancialHealth /> : // 🌟 NEW
+                                    <Admin />}
                 </div>
             </main>
         </div>

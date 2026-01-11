@@ -132,33 +132,6 @@ public class AccountService {
         return sb.toString();
     }
 
-    public Transaction logManualExpense(String accountNum, BigDecimal amount, String category, String description) {
-        Account account = accountRepository.findByAccountNumber(accountNum)
-                .orElseThrow(() -> new RuntimeException("Account not found"));
-
-        // 1. Update Balance (Optional: Only if you want 'Cash' to reduce your digital balance.
-        //    Usually, for manual tracking, we might NOT reduce the bank balance,
-        //    but let's assume this is a Debit Card swipe, so we DO reduce it.)
-        if (account.getBalance().compareTo(amount) < 0) {
-            throw new RuntimeException("Insufficient funds for this expense.");
-        }
-        account.setBalance(account.getBalance().subtract(amount));
-        accountRepository.save(account);
-
-        // 2. Create the "Rich" Transaction Record
-        Transaction tx = new Transaction();
-        tx.setFromAccountId(account.getAccountId());
-        tx.setSenderAccountNumber(accountNum);
-        tx.setAmount(amount);
-        tx.setDescription(description);
-        tx.setCategory(category);       // e.g., "Food"
-        tx.setTransactionType("EXPENSE"); // e.g., "EXPENSE"
-        tx.setStatus("SUCCESS");
-        tx.setTimestamp(LocalDateTime.now());
-
-        return transactionRepository.save(tx);
-    }
-
     public Account createAccount(Long userId, String type, String name) {
         Account account = new Account();
         account.setUserId(userId);

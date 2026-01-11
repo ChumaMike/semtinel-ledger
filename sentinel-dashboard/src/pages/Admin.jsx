@@ -3,9 +3,8 @@ import { coreApi } from '../utils/api';
 import { toast } from 'react-toastify';
 import {
     Landmark, Search, ShieldAlert, History,
-    ArrowUpRight, ArrowDownLeft, CreditCard, User, Banknote
+    ArrowUpRight, ArrowDownLeft, CreditCard, User, Banknote, Unlock
 } from 'lucide-react';
-import { Lock, Unlock, ShieldAlert } from 'lucide-react'; // Add these icons
 
 const Admin = () => {
 

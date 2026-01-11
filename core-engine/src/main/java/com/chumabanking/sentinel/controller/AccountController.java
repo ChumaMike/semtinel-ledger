@@ -67,20 +67,6 @@ public class AccountController {
         return ResponseEntity.ok(result);
     }
 
-    // 🌟 NEW: Manual Expense Endpoint (Fixed)
-    @PostMapping("/expense")
-    public ResponseEntity<?> logExpense(@RequestBody Map<String, Object> request) {
-        String accountNum = (String) request.get("accountNumber");
-        String category = (String) request.get("category");
-        String description = (String) request.get("description");
-
-        // Safety conversion for amount
-        BigDecimal amount = new BigDecimal(request.get("amount").toString());
-
-        Transaction tx = accountService.logManualExpense(accountNum, amount, category, description);
-        return ResponseEntity.ok(tx);
-    }
-
     // Helper to get User ID
     private Long getCurrentUserId() {
         String userIdStr = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

@@ -4,39 +4,42 @@ import com.sentinel.common.model.Goal;
 import com.chumabanking.sentinel.service.GoalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/api/goals")
-@CrossOrigin(origins = "http://localhost:5173")
 public class GoalController {
 
     @Autowired private GoalService goalService;
 
-    @PostMapping
-    public ResponseEntity<Goal> createGoal(@RequestBody Goal goal) {
-        Long userId = getCurrentUserId();
-        goal.setUserId(userId); // Link goal to the logged-in user
-        return ResponseEntity.ok(goalService.createGoal(goal));
-    }
-
+    // GET My Goals
     @GetMapping
-    public List<Goal> myGoals() {
-        return goalService.getMyGoals(getCurrentUserId());
+    public ResponseEntity<List<Goal>> getMyGoals() {
+        // ⚠️ In a real app, extract UserID from Token. Hardcoded to 1 for prototype.
+        Long userId = 1L;
+        return ResponseEntity.ok(goalService.getUserGoals(userId));
     }
 
-    // 🧠 The "Sentinel Advisor" Endpoint
-    @GetMapping("/{id}/advice")
-    public ResponseEntity<Map<String, String>> getAdvice(@PathVariable Long id) {
-        String advice = goalService.getSavingAdvice(id);
-        return ResponseEntity.ok(Map.of("message", advice));
+    // POST Create Goal
+    @PostMapping
+    public ResponseEntity<Goal> createGoal(@RequestBody Map<String, Object> request) {
+        Long userId = 1L; // Hardcoded for now
+        String name = (String) request.get("name");
+        BigDecimal amount = new BigDecimal(request.get("targetAmount").toString());
+
+        return ResponseEntity.ok(goalService.createGoal(userId, name, amount));
     }
 
-    private Long getCurrentUserId() {
-        String userIdStr = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return Long.parseLong(userIdStr);
+    // 🌟 POST: Contribute Funds
+    @PostMapping("/{goalId}/contribute")
+    public ResponseEntity<Goal> contribute(@PathVariable Long goalId, @RequestBody Map<String, Object> request) {
+        String accountNumber = (String) request.get("accountNumber");
+        BigDecimal amount = new BigDecimal(request.get("amount").toString());
+
+        return ResponseEntity.ok(goalService.contributeToGoal(goalId, accountNumber, amount));
     }
 }
