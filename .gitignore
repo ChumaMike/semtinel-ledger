@@ -20,3 +20,10 @@ target/
 node_modules/
 build/
 dist/
+.idea/
+*.iml
+target/
+node_modules/
+.DS_Store
+__pycache__/
+.env
