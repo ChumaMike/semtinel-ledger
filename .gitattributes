@@ -1,0 +1,3 @@
+sentinel-dashboard/**/* linguist-vendored
+*.js linguist-vendored
+*.jsx linguist-vendored
