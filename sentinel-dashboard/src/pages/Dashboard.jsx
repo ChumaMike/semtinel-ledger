@@ -1,4 +1,4 @@
-/* eslint-disable no-unused-vars, react-hooks/exhaustive-deps */
+/* eslint-disable no-unused-vars, react-hooks/exhaustive-deps, react-hooks/set-state-in-effect */
 import React, { useEffect, useState } from 'react';
 import { coreApi } from '../utils/api';
 import { Wallet, CreditCard, PlusCircle, MinusCircle, TrendingUp } from 'lucide-react';

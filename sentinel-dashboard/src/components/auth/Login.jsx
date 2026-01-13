@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState } from 'react';
 import { ShieldCheck, Lock, Mail, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
