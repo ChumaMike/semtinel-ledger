@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars, react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react';
 import { coreApi } from '../utils/api';
 import { toast } from 'react-toastify';

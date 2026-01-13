@@ -31,7 +31,6 @@ function App() {
             setIsAuthenticated(true);
             setUserProfile(user);
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const handleLoginSuccess = () => {
